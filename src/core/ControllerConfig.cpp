@@ -2905,6 +2905,14 @@ void CControllerConfigManager::UpdateJoyButtonState(int32 padnumber)
 		m_aButtonStates[4] = 1;
 	if (heldButtons & PAD_TRIGGER_R)
 		m_aButtonStates[5] = 1;
+	if (heldButtons & PAD_BUTTON_R1)
+		m_aButtonStates[7] = 1;
+	if (heldButtons & PAD_BUTTON_SELECT)
+		m_aButtonStates[8] = 1;
+	if (heldButtons & PAD_BUTTON_L3)
+		m_aButtonStates[9] = 1;
+	if (heldButtons & PAD_BUTTON_R3)
+		m_aButtonStates[10] = 1;
 #endif
 }
 

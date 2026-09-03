@@ -618,15 +618,17 @@ static uint32 remapWpadButtons(uint32 wpad, int32 expansion)
 	if (wpad & WPAD_BUTTON_2)     out |= PAD_BUTTON_Y;
 	if (wpad & WPAD_BUTTON_PLUS)  out |= PAD_BUTTON_START;
 	if (wpad & WPAD_BUTTON_MINUS) out |= PAD_TRIGGER_Z;
-	if (wpad & WPAD_BUTTON_UP)    out |= PAD_BUTTON_UP;
-	if (wpad & WPAD_BUTTON_DOWN)  out |= PAD_BUTTON_DOWN;
-	if (wpad & WPAD_BUTTON_LEFT)  out |= PAD_BUTTON_LEFT;
-	if (wpad & WPAD_BUTTON_RIGHT) out |= PAD_BUTTON_RIGHT;
 
 	if (expansion == WPAD_EXP_NUNCHUK)
 	{
 		if (wpad & WPAD_NUNCHUK_BUTTON_Z) out |= PAD_TRIGGER_R;
 		if (wpad & WPAD_NUNCHUK_BUTTON_C) out |= PAD_TRIGGER_L;
+
+		// the stick moves
+		if (wpad & WPAD_BUTTON_UP)    out |= PAD_BUTTON_R3;
+		if (wpad & WPAD_BUTTON_DOWN)  out |= PAD_BUTTON_R1;
+		if (wpad & WPAD_BUTTON_LEFT)  out |= PAD_BUTTON_L3;
+		if (wpad & WPAD_BUTTON_RIGHT) out |= PAD_BUTTON_SELECT;
 	}
 	else if (expansion == WPAD_EXP_CLASSIC)
 	{
@@ -642,6 +644,13 @@ static uint32 remapWpadButtons(uint32 wpad, int32 expansion)
 		if (wpad & WPAD_CLASSIC_BUTTON_DOWN)   out |= PAD_BUTTON_DOWN;
 		if (wpad & WPAD_CLASSIC_BUTTON_LEFT)   out |= PAD_BUTTON_LEFT;
 		if (wpad & WPAD_CLASSIC_BUTTON_RIGHT)  out |= PAD_BUTTON_RIGHT;
+	}
+	else
+	{
+		if (wpad & WPAD_BUTTON_UP)    out |= PAD_BUTTON_UP;
+		if (wpad & WPAD_BUTTON_DOWN)  out |= PAD_BUTTON_DOWN;
+		if (wpad & WPAD_BUTTON_LEFT)  out |= PAD_BUTTON_LEFT;
+		if (wpad & WPAD_BUTTON_RIGHT) out |= PAD_BUTTON_RIGHT;
 	}
 
 	return out;
