@@ -692,7 +692,7 @@ void GetProcBinary(al_string *path, al_string *fname)
     pathlen = strlen(pathname);
 #endif
 #ifdef __WII__
-    const char* dolPath = "sd:/apps/re3/re3.dol";
+    const char* dolPath = "sd:/apps/re3/boot.dol";
     pathname = malloc(strlen(dolPath) + 1);
     strcpy(pathname, dolPath);
     pathlen = strlen(pathname);

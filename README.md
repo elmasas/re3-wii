@@ -4,7 +4,7 @@
 This is a port of GTA III to the Nintendo Wii, based on [GaryOderNichts' Wii U port](https://github.com/GaryOderNichts/re3-wiiu).  
 
 ## Instructions
-Copy your PC game assets to `sd:/apps/re3/` and put `re3.dol` next to them.  
+Copy the built `apps` folder to your SD card and put your PC game assets inside it.  
 
 ## Building
 Install [devkitPro](https://devkitpro.org/wiki/Getting_Started).  
