@@ -1,0 +1,15 @@
+/bin
+/build
+/obj
+/lib
+/output
+/.vs
+librw.vcxproj.user
+librw.VC.db
+librw.VC.VC.opendb
+*.d
+*.o
+/.vscode
+*.gsh
+/src/gx2/shaders/latte-assembler
+imgui.ini

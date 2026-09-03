@@ -1,0 +1,41 @@
+; $MODE = "UniformRegister"
+
+; $NUM_SPI_PS_INPUT_CNTL = 3
+; color R0
+; $SPI_PS_INPUT_CNTL[0].SEMANTIC = 0
+; $SPI_PS_INPUT_CNTL[0].DEFAULT_VAL = 1
+; tex R1
+; $SPI_PS_INPUT_CNTL[1].SEMANTIC = 1
+; $SPI_PS_INPUT_CNTL[1].DEFAULT_VAL = 1
+; fog R2
+; $SPI_PS_INPUT_CNTL[2].SEMANTIC = 2
+; $SPI_PS_INPUT_CNTL[2].DEFAULT_VAL = 1
+
+; C0
+; $UNIFORM_VARS[0].name = "u_fogColor"
+; $UNIFORM_VARS[0].type = "vec4"
+; $UNIFORM_VARS[0].count = 1
+; $UNIFORM_VARS[0].block = -1
+; $UNIFORM_VARS[0].offset = 0
+
+; $SAMPLER_VARS[0].name = "tex0"
+; $SAMPLER_VARS[0].type = "SAMPLER2D"
+; $SAMPLER_VARS[0].location = 0
+
+00 ALU: ADDR(32) CNT(2)
+    0  y: ADD R1.y, -R1.y, 1.0f
+01 TEX: ADDR(48) CNT(1) VALID_PIX
+    1  SAMPLE R1, R1.xy0x, t0, s0
+02 ALU: ADDR(34) CNT(10)
+    2  x: MUL    R0.x, R0.x, R1.x
+       y: MUL    R0.y, R0.y, R1.y
+       z: MUL    R0.z, R0.z, R1.z
+       w: MUL    R0.w, R0.w, R1.w
+    3  x: ADD    ____, R0.x, -C0.x
+       y: ADD    ____, R0.y, -C0.y
+       z: ADD    ____, R0.z, -C0.z
+    4  x: MULADD R0.x, PV0.x, R2.x, C0.x
+       y: MULADD R0.y, PV0.y, R2.x, C0.y
+       z: MULADD R0.z, PV0.z, R2.x, C0.z
+03 EXP_DONE: PIX0, R0
+END_OF_PROGRAM
