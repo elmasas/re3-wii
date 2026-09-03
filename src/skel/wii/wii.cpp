@@ -611,6 +611,7 @@ _InputTranslateShiftKeyUpDown(RsKeyCodes *rs) {
 }
 
 RwV2d leftStickPos;
+RwV2d rightStickPos;
 
 static uint32 remapWpadButtons(uint32 wpad, int32 expansion)
 {
@@ -671,6 +672,8 @@ void CapturePad(RwInt32 padID)
 
 	leftStickPos.x = 0.0f;
 	leftStickPos.y = 0.0f;
+	rightStickPos.x = 0.0f;
+	rightStickPos.y = 0.0f;
 
 	// reading both at once would double up every press
 	if (connected & PAD_CHAN0_BIT)
@@ -680,6 +683,9 @@ void CapturePad(RwInt32 padID)
 
 		leftStickPos.x = PAD_StickX(0) / 128.0f;
 		leftStickPos.y = -PAD_StickY(0) / 128.0f;
+
+		rightStickPos.x = PAD_SubStickX(0) / 128.0f;
+		rightStickPos.y = -PAD_SubStickY(0) / 128.0f;
 	}
 	else
 	{
@@ -697,7 +703,10 @@ void CapturePad(RwInt32 padID)
 			if (exp.type == WPAD_EXP_NUNCHUK)
 				addJoystick(&exp.nunchuk.js, &leftStickPos);
 			else if (exp.type == WPAD_EXP_CLASSIC)
+			{
 				addJoystick(&exp.classic.ljs, &leftStickPos);
+				addJoystick(&exp.classic.rjs, &rightStickPos);
+			}
 		}
 	}
 
@@ -705,6 +714,11 @@ void CapturePad(RwInt32 padID)
 	leftStickPos.x = leftStickPos.x < -1.0f ? -1.0f : leftStickPos.x;
 	leftStickPos.y = leftStickPos.y >  1.0f ?  1.0f : leftStickPos.y;
 	leftStickPos.y = leftStickPos.y < -1.0f ? -1.0f : leftStickPos.y;
+
+	rightStickPos.x = rightStickPos.x >  1.0f ?  1.0f : rightStickPos.x;
+	rightStickPos.x = rightStickPos.x < -1.0f ? -1.0f : rightStickPos.x;
+	rightStickPos.y = rightStickPos.y >  1.0f ?  1.0f : rightStickPos.y;
+	rightStickPos.y = rightStickPos.y < -1.0f ? -1.0f : rightStickPos.y;
 
 	if (ControlsManager.m_bFirstCapture == false)
 	{
@@ -745,6 +759,12 @@ void CapturePad(RwInt32 padID)
 
 		if ( Abs(leftStickPos.y) > 0.3f )
 			pad->PCTempJoyState.LeftStickY = (int32)(leftStickPos.y * 128.0f);
+
+		if ( Abs(rightStickPos.x) > 0.3f )
+			pad->PCTempJoyState.RightStickX = (int32)(rightStickPos.x * 128.0f);
+
+		if ( Abs(rightStickPos.y) > 0.3f )
+			pad->PCTempJoyState.RightStickY = (int32)(rightStickPos.y * 128.0f);
 	}
 }
 
