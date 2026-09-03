@@ -103,14 +103,9 @@ extern "C" int sigaction(int signum, const struct sigaction *act, struct sigacti
 void _psCreateFolder(const char *path)
 {
 	struct stat info;
-	char fullpath[PATH_MAX];
-	realpath(path, fullpath);
 
-	if (stat(fullpath, &info) != 0) {
-		if (errno == ENOENT || (errno != EACCES && !S_ISDIR(info.st_mode))) {
-			mkdir(fullpath, 0755);
-		}
-	}
+	if (stat(path, &info) != 0)
+		mkdir(path, 0755);
 }
 
 /*
