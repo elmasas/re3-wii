@@ -22,7 +22,8 @@ template <typename T>
 inline void
 ReadSaveBuf(T* out, uint8 *&buf)
 {
-	*out = *(T *)buf;
+	// the save layout is unaligned
+	memcpy(out, buf, sizeof(T));
 	SkipSaveBuf(buf, sizeof(T));
 }
 
@@ -31,7 +32,7 @@ inline T *
 WriteSaveBuf(uint8 *&buf, const T &value)
 {
 	T *p = (T *)buf;
-	*p = value;
+	memcpy(p, &value, sizeof(T));
 	SkipSaveBuf(buf, sizeof(T));
 	return p;
 }
