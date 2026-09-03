@@ -92,6 +92,9 @@ readBMP(const char *filename)
 	if(!bmp.read(&file))
 		goto lose;
 	file.read8(&dib, sizeof(dib));
+	memNative32(&dib.headerSize, 12);
+	memNative16(&dib.numPlanes, 4);
+	memNative32(&dib.compression, sizeof(dib)-16);
 	file.seek(dib.headerSize-sizeof(dib));	// skip the part of the header we're ignoring
 	if(dib.headerSize <= 16){
 		dib.compression = 0;
