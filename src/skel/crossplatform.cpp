@@ -159,12 +159,32 @@ char *trim(char *s) {
     return s;
 }
 
+#ifdef __WII__
+static const char* fixseparators(char const* path)
+{
+    static char buf[256];
+    char* p;
+
+    strncpy(buf, path, sizeof(buf)-1);
+    buf[sizeof(buf)-1] = '\0';
+    for (p = buf; *p; p++)
+        if (*p == '\\')
+            *p = '/';
+    return buf;
+}
+#endif
+
 FILE* _fcaseopen(char const* filename, char const* mode)
 {
     FILE* result;
     char* real = casepath(filename);
     if (!real)
+#ifdef __WII__
+        // casepath resolves nothing for a file being created
+        result = fopen(fixseparators(filename), mode);
+#else
         result = fopen(filename, mode);
+#endif
     else {
         result = fopen(real, mode);
         free(real);
