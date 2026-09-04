@@ -617,15 +617,25 @@ static uint32 remapGcButtons(uint32 pad)
 	if (pad & PAD_BUTTON_X)     out |= PAD_BUTTON_X;
 	if (pad & PAD_BUTTON_Y)     out |= PAD_BUTTON_Y;
 	if (pad & PAD_BUTTON_START) out |= PAD_BUTTON_START;
-	if (pad & PAD_BUTTON_UP)    out |= PAD_BUTTON_UP;
-	if (pad & PAD_BUTTON_DOWN)  out |= PAD_BUTTON_DOWN;
 
 	if (pad & PAD_TRIGGER_L)    out |= PAD_TRIGGER_Z;
 	if (pad & PAD_TRIGGER_R)    out |= PAD_BUTTON_R1;
 	if (pad & PAD_TRIGGER_Z)    out |= PAD_BUTTON_L3;
 
-	if (pad & PAD_BUTTON_LEFT)  out |= PAD_TRIGGER_L;
-	if (pad & PAD_BUTTON_RIGHT) out |= PAD_TRIGGER_R;
+	if (FrontEndMenuManager.m_bMenuActive)
+	{
+		if (pad & PAD_BUTTON_LEFT)  out |= PAD_BUTTON_LEFT;
+		if (pad & PAD_BUTTON_RIGHT) out |= PAD_BUTTON_RIGHT;
+		if (pad & PAD_BUTTON_UP)    out |= PAD_BUTTON_UP;
+		if (pad & PAD_BUTTON_DOWN)  out |= PAD_BUTTON_DOWN;
+	}
+	else
+	{
+		if (pad & PAD_BUTTON_LEFT)  out |= PAD_TRIGGER_L;
+		if (pad & PAD_BUTTON_RIGHT) out |= PAD_TRIGGER_R;
+		if (pad & PAD_BUTTON_UP)    out |= PAD_BUTTON_SELECT;
+		if (pad & PAD_BUTTON_DOWN)  out |= PAD_BUTTON_R3;
+	}
 
 	return out;
 }
@@ -664,8 +674,8 @@ static uint32 remapWpadButtons(uint32 wpad, int32 expansion)
 		if (wpad & WPAD_CLASSIC_BUTTON_FULL_R) out |= PAD_BUTTON_R1;
 		if (wpad & WPAD_CLASSIC_BUTTON_ZL)     out |= PAD_TRIGGER_L;
 		if (wpad & WPAD_CLASSIC_BUTTON_ZR)     out |= PAD_TRIGGER_R;
-		if (wpad & WPAD_CLASSIC_BUTTON_UP)     out |= PAD_BUTTON_UP;
-		if (wpad & WPAD_CLASSIC_BUTTON_DOWN)   out |= PAD_BUTTON_DOWN;
+		if (wpad & WPAD_CLASSIC_BUTTON_UP)     out |= FrontEndMenuManager.m_bMenuActive ? PAD_BUTTON_UP : PAD_BUTTON_L3;
+		if (wpad & WPAD_CLASSIC_BUTTON_DOWN)   out |= FrontEndMenuManager.m_bMenuActive ? PAD_BUTTON_DOWN : PAD_BUTTON_R3;
 		if (wpad & WPAD_CLASSIC_BUTTON_LEFT)   out |= PAD_BUTTON_LEFT;
 		if (wpad & WPAD_CLASSIC_BUTTON_RIGHT)  out |= PAD_BUTTON_RIGHT;
 	}
