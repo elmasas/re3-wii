@@ -608,6 +608,28 @@ _InputTranslateShiftKeyUpDown(RsKeyCodes *rs) {
 RwV2d leftStickPos;
 RwV2d rightStickPos;
 
+static uint32 remapGcButtons(uint32 pad)
+{
+	uint32 out = 0;
+
+	if (pad & PAD_BUTTON_A)     out |= PAD_BUTTON_A;
+	if (pad & PAD_BUTTON_B)     out |= PAD_BUTTON_B;
+	if (pad & PAD_BUTTON_X)     out |= PAD_BUTTON_X;
+	if (pad & PAD_BUTTON_Y)     out |= PAD_BUTTON_Y;
+	if (pad & PAD_BUTTON_START) out |= PAD_BUTTON_START;
+	if (pad & PAD_BUTTON_UP)    out |= PAD_BUTTON_UP;
+	if (pad & PAD_BUTTON_DOWN)  out |= PAD_BUTTON_DOWN;
+
+	if (pad & PAD_TRIGGER_L)    out |= PAD_TRIGGER_Z;
+	if (pad & PAD_TRIGGER_R)    out |= PAD_BUTTON_R1;
+	if (pad & PAD_TRIGGER_Z)    out |= PAD_BUTTON_L3;
+
+	if (pad & PAD_BUTTON_LEFT)  out |= PAD_TRIGGER_L;
+	if (pad & PAD_BUTTON_RIGHT) out |= PAD_TRIGGER_R;
+
+	return out;
+}
+
 static uint32 remapWpadButtons(uint32 wpad, int32 expansion)
 {
 	uint32 out = 0;
@@ -621,14 +643,14 @@ static uint32 remapWpadButtons(uint32 wpad, int32 expansion)
 
 	if (expansion == WPAD_EXP_NUNCHUK)
 	{
-		if (wpad & WPAD_NUNCHUK_BUTTON_Z) out |= PAD_TRIGGER_R;
-		if (wpad & WPAD_NUNCHUK_BUTTON_C) out |= PAD_TRIGGER_L;
+		if (wpad & WPAD_NUNCHUK_BUTTON_Z) out |= PAD_BUTTON_R1;
+		if (wpad & WPAD_NUNCHUK_BUTTON_C) out |= PAD_BUTTON_L3;
 
 		// the stick moves
 		if (wpad & WPAD_BUTTON_UP)    out |= PAD_BUTTON_R3;
-		if (wpad & WPAD_BUTTON_DOWN)  out |= PAD_BUTTON_R1;
-		if (wpad & WPAD_BUTTON_LEFT)  out |= PAD_BUTTON_L3;
-		if (wpad & WPAD_BUTTON_RIGHT) out |= PAD_BUTTON_SELECT;
+		if (wpad & WPAD_BUTTON_DOWN)  out |= PAD_BUTTON_SELECT;
+		if (wpad & WPAD_BUTTON_LEFT)  out |= PAD_TRIGGER_L;
+		if (wpad & WPAD_BUTTON_RIGHT) out |= PAD_TRIGGER_R;
 	}
 	else if (expansion == WPAD_EXP_CLASSIC)
 	{
@@ -637,9 +659,11 @@ static uint32 remapWpadButtons(uint32 wpad, int32 expansion)
 		if (wpad & WPAD_CLASSIC_BUTTON_X)      out |= PAD_BUTTON_X;
 		if (wpad & WPAD_CLASSIC_BUTTON_Y)      out |= PAD_BUTTON_Y;
 		if (wpad & WPAD_CLASSIC_BUTTON_PLUS)   out |= PAD_BUTTON_START;
-		if (wpad & WPAD_CLASSIC_BUTTON_FULL_L) out |= PAD_TRIGGER_L;
-		if (wpad & WPAD_CLASSIC_BUTTON_FULL_R) out |= PAD_TRIGGER_R;
-		if (wpad & (WPAD_CLASSIC_BUTTON_ZL|WPAD_CLASSIC_BUTTON_ZR)) out |= PAD_TRIGGER_Z;
+		if (wpad & WPAD_CLASSIC_BUTTON_MINUS)  out |= PAD_BUTTON_SELECT;
+		if (wpad & WPAD_CLASSIC_BUTTON_FULL_L) out |= PAD_TRIGGER_Z;
+		if (wpad & WPAD_CLASSIC_BUTTON_FULL_R) out |= PAD_BUTTON_R1;
+		if (wpad & WPAD_CLASSIC_BUTTON_ZL)     out |= PAD_TRIGGER_L;
+		if (wpad & WPAD_CLASSIC_BUTTON_ZR)     out |= PAD_TRIGGER_R;
 		if (wpad & WPAD_CLASSIC_BUTTON_UP)     out |= PAD_BUTTON_UP;
 		if (wpad & WPAD_CLASSIC_BUTTON_DOWN)   out |= PAD_BUTTON_DOWN;
 		if (wpad & WPAD_CLASSIC_BUTTON_LEFT)   out |= PAD_BUTTON_LEFT;
@@ -682,8 +706,8 @@ void CapturePad(RwInt32 padID)
 	// PAD_ScanPads returns 1<<chan, not PAD_CHAN0_BIT
 	if (connected & (1 << PAD_CHAN0))
 	{
-		buttonsTriggered |= PAD_ButtonsDown(PAD_CHAN0);
-		buttonsHeld      |= PAD_ButtonsHeld(PAD_CHAN0);
+		buttonsTriggered |= remapGcButtons(PAD_ButtonsDown(PAD_CHAN0));
+		buttonsHeld      |= remapGcButtons(PAD_ButtonsHeld(PAD_CHAN0));
 
 		leftStickPos.x += PAD_StickX(PAD_CHAN0) / 72.0f;
 		leftStickPos.y += -PAD_StickY(PAD_CHAN0) / 72.0f;
