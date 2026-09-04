@@ -657,10 +657,10 @@ static uint32 remapWpadButtons(uint32 wpad, int32 expansion)
 		if (wpad & WPAD_NUNCHUK_BUTTON_C) out |= PAD_BUTTON_L3;
 
 		// the stick moves
-		if (wpad & WPAD_BUTTON_UP)    out |= PAD_BUTTON_R3;
-		if (wpad & WPAD_BUTTON_DOWN)  out |= PAD_BUTTON_SELECT;
-		if (wpad & WPAD_BUTTON_LEFT)  out |= PAD_TRIGGER_L;
-		if (wpad & WPAD_BUTTON_RIGHT) out |= PAD_TRIGGER_R;
+		if (wpad & WPAD_BUTTON_UP)    out |= FrontEndMenuManager.m_bMenuActive ? PAD_BUTTON_UP    : PAD_BUTTON_R3;
+		if (wpad & WPAD_BUTTON_DOWN)  out |= FrontEndMenuManager.m_bMenuActive ? PAD_BUTTON_DOWN  : PAD_BUTTON_SELECT;
+		if (wpad & WPAD_BUTTON_LEFT)  out |= FrontEndMenuManager.m_bMenuActive ? PAD_BUTTON_LEFT  : PAD_TRIGGER_L;
+		if (wpad & WPAD_BUTTON_RIGHT) out |= FrontEndMenuManager.m_bMenuActive ? PAD_BUTTON_RIGHT : PAD_TRIGGER_R;
 	}
 	else if (expansion == WPAD_EXP_CLASSIC)
 	{
