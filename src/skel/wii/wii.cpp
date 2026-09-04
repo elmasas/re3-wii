@@ -679,26 +679,26 @@ void CapturePad(RwInt32 padID)
 	rightStickPos.x = 0.0f;
 	rightStickPos.y = 0.0f;
 
-	// reading both at once would double up every press
-	if (connected & PAD_CHAN0_BIT)
+	// PAD_ScanPads returns 1<<chan, not PAD_CHAN0_BIT
+	if (connected & (1 << PAD_CHAN0))
 	{
-		buttonsTriggered = PAD_ButtonsDown(0);
-		buttonsHeld = PAD_ButtonsHeld(0);
+		buttonsTriggered |= PAD_ButtonsDown(PAD_CHAN0);
+		buttonsHeld      |= PAD_ButtonsHeld(PAD_CHAN0);
 
-		leftStickPos.x = PAD_StickX(0) / 128.0f;
-		leftStickPos.y = -PAD_StickY(0) / 128.0f;
+		leftStickPos.x += PAD_StickX(PAD_CHAN0) / 100.0f;
+		leftStickPos.y += -PAD_StickY(PAD_CHAN0) / 100.0f;
 
-		rightStickPos.x = PAD_SubStickX(0) / 128.0f;
-		rightStickPos.y = -PAD_SubStickY(0) / 128.0f;
+		rightStickPos.x += PAD_SubStickX(PAD_CHAN0) / 100.0f;
+		rightStickPos.y += -PAD_SubStickY(PAD_CHAN0) / 100.0f;
 	}
-	else
+
 	{
 		uint32 wpadType = WPAD_EXP_NONE;
 		if (WPAD_Probe(WPAD_CHAN_0, &wpadType) != WPAD_ERR_NONE)
 			wpadType = WPAD_EXP_NONE;
 
-		buttonsTriggered = remapWpadButtons(WPAD_ButtonsDown(WPAD_CHAN_0), wpadType);
-		buttonsHeld      = remapWpadButtons(WPAD_ButtonsHeld(WPAD_CHAN_0), wpadType);
+		buttonsTriggered |= remapWpadButtons(WPAD_ButtonsDown(WPAD_CHAN_0), wpadType);
+		buttonsHeld      |= remapWpadButtons(WPAD_ButtonsHeld(WPAD_CHAN_0), wpadType);
 
 		if (wpadType == WPAD_EXP_NUNCHUK || wpadType == WPAD_EXP_CLASSIC)
 		{
