@@ -23,6 +23,8 @@
 /* A transfer is too small to mix in one call, so a thread fills a ring ahead. */
 #define MIX_FRAMES 1024
 #define RING_BYTES (64*1024)
+/* 60ms of mix ahead. */
+#define LEAD_BYTES (6*DMA_BYTES)
 
 static const ALCchar defaultDeviceName[] = "AESND Default";
 
@@ -81,7 +83,7 @@ static int ALCaesndBackend_mixerProc(void *ptr)
         ALuint readPos = ATOMIC_LOAD(&self->readPos, almemory_order_acquire);
         ALuint pos, first;
 
-        if(RING_BYTES - (writePos - readPos) < blockSize)
+        if(writePos - readPos >= LEAD_BYTES)
         {
             al_nssleep(1000000);
             continue;
