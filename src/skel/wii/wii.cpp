@@ -685,11 +685,11 @@ void CapturePad(RwInt32 padID)
 		buttonsTriggered |= PAD_ButtonsDown(PAD_CHAN0);
 		buttonsHeld      |= PAD_ButtonsHeld(PAD_CHAN0);
 
-		leftStickPos.x += PAD_StickX(PAD_CHAN0) / 100.0f;
-		leftStickPos.y += -PAD_StickY(PAD_CHAN0) / 100.0f;
+		leftStickPos.x += PAD_StickX(PAD_CHAN0) / 72.0f;
+		leftStickPos.y += -PAD_StickY(PAD_CHAN0) / 72.0f;
 
-		rightStickPos.x += PAD_SubStickX(PAD_CHAN0) / 100.0f;
-		rightStickPos.y += -PAD_SubStickY(PAD_CHAN0) / 100.0f;
+		rightStickPos.x += PAD_SubStickX(PAD_CHAN0) / 59.0f;
+		rightStickPos.y += -PAD_SubStickY(PAD_CHAN0) / 59.0f;
 	}
 
 	{
