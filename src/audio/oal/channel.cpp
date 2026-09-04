@@ -183,15 +183,7 @@ void CChannel::SetSampleData(void *_data, size_t _DataSize, int32 freq)
 	DataSize = _DataSize;
 	Frequency = freq;
 
-#ifdef BIGENDIAN
-	Data = malloc(DataSize);
-	memcpy(Data, _data, DataSize);
-	for (int i = 0; i < DataSize / sizeof(uint16); i++) {
-		((uint16*)Data)[i] = BSWAP16(((uint16*)Data)[i]);
-	}
-#else
 	Data = _data;
-#endif
 }
 	
 void CChannel::SetCurrentFreq(uint32 freq)
@@ -277,10 +269,6 @@ void CChannel::ClearBuffer()
 	if ( !HasSource() ) return;
 	alSourcei(alSources[id], AL_LOOPING, AL_FALSE);
 	alSourcei(alSources[id], AL_BUFFER, AL_NONE);
-
-#ifdef BIGENDIAN
-	free(Data);
-#endif
 
 	Data = nil;
 	DataSize = 0;

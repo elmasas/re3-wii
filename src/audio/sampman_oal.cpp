@@ -1171,6 +1171,17 @@ cSampleManager::SetMonoMode(uint8 nMode)
 	m_nMonoMode = nMode;
 }
 
+#ifdef BIGENDIAN
+static void
+SwapSamples(uintptr addr, uint32 size)
+{
+	uint16 *samples = (uint16 *)addr;
+
+	for ( uint32 i = 0; i < size / sizeof(uint16); i++ )
+		samples[i] = BSWAP16(samples[i]);
+}
+#endif
+
 bool8
 cSampleManager::LoadSampleBank(uint8 nBank)
 {
@@ -1206,6 +1217,10 @@ cSampleManager::LoadSampleBank(uint8 nBank)
 	
 	if ( fread((void *)nSampleBankMemoryStartAddress[nBank], 1, nSampleBankSize[nBank], fpSampleDataHandle) != nSampleBankSize[nBank] )
 		return FALSE;
+
+#ifdef BIGENDIAN
+	SwapSamples(nSampleBankMemoryStartAddress[nBank], nSampleBankSize[nBank]);
+#endif
 #endif
 	bSampleBankLoaded[nBank] = TRUE;
 	
@@ -1319,6 +1334,9 @@ cSampleManager::LoadPedComment(uint32 nComment)
 	if ( fread((void *)(nSampleBankMemoryStartAddress[SFX_BANK_PED_COMMENTS] + PED_BLOCKSIZE*nCurrentPedSlot), 1, m_aSamples[nComment].nSize, fpSampleDataHandle) != m_aSamples[nComment].nSize )
 		return FALSE;
 
+#ifdef BIGENDIAN
+	SwapSamples(nSampleBankMemoryStartAddress[SFX_BANK_PED_COMMENTS] + PED_BLOCKSIZE*nCurrentPedSlot, m_aSamples[nComment].nSize);
+#endif
 #endif
 	nPedSlotSfx[nCurrentPedSlot] = nComment;
 		
