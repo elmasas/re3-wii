@@ -734,7 +734,7 @@ HandlePadButtonDown(RsPadButtonStatus *padButtonStatus)
 	
 	ControlsManager.UpdateJoyButtonState(padNumber);
 	
-	for ( int32 i = 0; i < _TODOCONST(16); i++ )
+	for ( int32 i = 0; i < JOY_BUTTONS; i++ )
 	{
 		RsPadButtons btn = rsPADNULL;
 		if ( ControlsManager.m_aButtonStates[i] == TRUE )
@@ -774,7 +774,7 @@ HandlePadButtonUp(RsPadButtonStatus *padButtonStatus)
 	
 	ControlsManager.UpdateJoyButtonState(padNumber);
 	
-	for ( int32 i = 1; i < _TODOCONST(16); i++ )
+	for ( int32 i = 1; i < JOY_BUTTONS; i++ )
 	{
 		RsPadButtons btn = rsPADNULL;
 		if ( ControlsManager.m_aButtonStates[i] == FALSE )

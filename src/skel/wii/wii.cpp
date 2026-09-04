@@ -590,6 +590,7 @@ RwV2d rightStickPos;
 static uint32 remapGcButtons(uint32 pad)
 {
 	uint32 out = 0;
+	bool menu = FrontEndMenuManager.m_bMenuActive && !FrontEndMenuManager.m_bWaitingForNewKeyBind;
 
 	if (pad & PAD_BUTTON_A)     out |= PAD_BUTTON_A;
 	if (pad & PAD_BUTTON_B)     out |= PAD_BUTTON_B;
@@ -601,7 +602,7 @@ static uint32 remapGcButtons(uint32 pad)
 	if (pad & PAD_TRIGGER_R)    out |= PAD_BUTTON_R1;
 	if (pad & PAD_TRIGGER_Z)    out |= PAD_BUTTON_L3;
 
-	if (FrontEndMenuManager.m_bMenuActive)
+	if (menu)
 	{
 		if (pad & PAD_BUTTON_LEFT)  out |= PAD_BUTTON_LEFT;
 		if (pad & PAD_BUTTON_RIGHT) out |= PAD_BUTTON_RIGHT;
@@ -619,9 +620,48 @@ static uint32 remapGcButtons(uint32 pad)
 	return out;
 }
 
-static uint32 remapWpadButtons(uint32 wpad, int32 expansion)
+static uint32 remapClassicButtons(uint32 btns, uint8 type)
 {
 	uint32 out = 0;
+	bool menu = FrontEndMenuManager.m_bMenuActive && !FrontEndMenuManager.m_bWaitingForNewKeyBind;
+
+	if (btns & CLASSIC_CTRL_BUTTON_A)        out |= PAD_BUTTON_A;
+	if (btns & CLASSIC_CTRL_BUTTON_B)        out |= PAD_BUTTON_B;
+	if (btns & CLASSIC_CTRL_BUTTON_X)        out |= PAD_BUTTON_X;
+	if (btns & CLASSIC_CTRL_BUTTON_Y)        out |= PAD_BUTTON_Y;
+	if (btns & CLASSIC_CTRL_BUTTON_PLUS)     out |= PAD_BUTTON_START;
+	if (btns & CLASSIC_CTRL_BUTTON_MINUS)    out |= PAD_BUTTON_SELECT;
+	if (btns & CLASSIC_CTRL_BUTTON_FULL_L)   out |= PAD_TRIGGER_Z;
+	if (btns & CLASSIC_CTRL_BUTTON_FULL_R)   out |= PAD_BUTTON_R1;
+	if (btns & CLASSIC_CTRL_BUTTON_ZL)       out |= PAD_TRIGGER_L;
+	if (btns & CLASSIC_CTRL_BUTTON_ZR)       out |= PAD_TRIGGER_R;
+	if (btns & CLASSIC_CTRL_BUTTON_LEFT)     out |= PAD_BUTTON_LEFT;
+	if (btns & CLASSIC_CTRL_BUTTON_RIGHT)    out |= PAD_BUTTON_RIGHT;
+	if (btns & CLASSIC_CTRL_BUTTON_HOME)     out |= PAD_BUTTON_EXTRA;
+
+	if (type == CLASSIC_TYPE_WIIU)
+	{
+		if (btns & CLASSIC_CTRL_BUTTON_UP)       out |= PAD_BUTTON_UP;
+		if (btns & CLASSIC_CTRL_BUTTON_DOWN)     out |= PAD_BUTTON_DOWN;
+		if (btns & WII_U_PRO_CTRL_BUTTON_LSTICK) out |= PAD_BUTTON_L3;
+		if (btns & WII_U_PRO_CTRL_BUTTON_RSTICK) out |= PAD_BUTTON_R3;
+	}
+	else
+	{
+		if (btns & CLASSIC_CTRL_BUTTON_UP)   out |= menu ? PAD_BUTTON_UP : PAD_BUTTON_L3;
+		if (btns & CLASSIC_CTRL_BUTTON_DOWN) out |= menu ? PAD_BUTTON_DOWN : PAD_BUTTON_R3;
+	}
+
+	return out;
+}
+
+static uint32 remapWpadButtons(uint32 wpad, int32 expansion)
+{
+	if (expansion == WPAD_EXP_CLASSIC)
+		return 0;
+
+	uint32 out = 0;
+	bool menu = FrontEndMenuManager.m_bMenuActive && !FrontEndMenuManager.m_bWaitingForNewKeyBind;
 
 	if (wpad & WPAD_BUTTON_A)     out |= PAD_BUTTON_A;
 	if (wpad & WPAD_BUTTON_B)     out |= PAD_BUTTON_B;
@@ -629,6 +669,7 @@ static uint32 remapWpadButtons(uint32 wpad, int32 expansion)
 	if (wpad & WPAD_BUTTON_2)     out |= PAD_BUTTON_Y;
 	if (wpad & WPAD_BUTTON_PLUS)  out |= PAD_BUTTON_START;
 	if (wpad & WPAD_BUTTON_MINUS) out |= PAD_TRIGGER_Z;
+	if (wpad & WPAD_BUTTON_HOME)  out |= PAD_BUTTON_EXTRA;
 
 	if (expansion == WPAD_EXP_NUNCHUK)
 	{
@@ -636,27 +677,10 @@ static uint32 remapWpadButtons(uint32 wpad, int32 expansion)
 		if (wpad & WPAD_NUNCHUK_BUTTON_C) out |= PAD_BUTTON_L3;
 
 		// the stick moves
-		if (wpad & WPAD_BUTTON_UP)    out |= FrontEndMenuManager.m_bMenuActive ? PAD_BUTTON_UP    : PAD_BUTTON_R3;
-		if (wpad & WPAD_BUTTON_DOWN)  out |= FrontEndMenuManager.m_bMenuActive ? PAD_BUTTON_DOWN  : PAD_BUTTON_SELECT;
-		if (wpad & WPAD_BUTTON_LEFT)  out |= FrontEndMenuManager.m_bMenuActive ? PAD_BUTTON_LEFT  : PAD_TRIGGER_L;
-		if (wpad & WPAD_BUTTON_RIGHT) out |= FrontEndMenuManager.m_bMenuActive ? PAD_BUTTON_RIGHT : PAD_TRIGGER_R;
-	}
-	else if (expansion == WPAD_EXP_CLASSIC)
-	{
-		if (wpad & WPAD_CLASSIC_BUTTON_A)      out |= PAD_BUTTON_A;
-		if (wpad & WPAD_CLASSIC_BUTTON_B)      out |= PAD_BUTTON_B;
-		if (wpad & WPAD_CLASSIC_BUTTON_X)      out |= PAD_BUTTON_X;
-		if (wpad & WPAD_CLASSIC_BUTTON_Y)      out |= PAD_BUTTON_Y;
-		if (wpad & WPAD_CLASSIC_BUTTON_PLUS)   out |= PAD_BUTTON_START;
-		if (wpad & WPAD_CLASSIC_BUTTON_MINUS)  out |= PAD_BUTTON_SELECT;
-		if (wpad & WPAD_CLASSIC_BUTTON_FULL_L) out |= PAD_TRIGGER_Z;
-		if (wpad & WPAD_CLASSIC_BUTTON_FULL_R) out |= PAD_BUTTON_R1;
-		if (wpad & WPAD_CLASSIC_BUTTON_ZL)     out |= PAD_TRIGGER_L;
-		if (wpad & WPAD_CLASSIC_BUTTON_ZR)     out |= PAD_TRIGGER_R;
-		if (wpad & WPAD_CLASSIC_BUTTON_UP)     out |= FrontEndMenuManager.m_bMenuActive ? PAD_BUTTON_UP : PAD_BUTTON_L3;
-		if (wpad & WPAD_CLASSIC_BUTTON_DOWN)   out |= FrontEndMenuManager.m_bMenuActive ? PAD_BUTTON_DOWN : PAD_BUTTON_R3;
-		if (wpad & WPAD_CLASSIC_BUTTON_LEFT)   out |= PAD_BUTTON_LEFT;
-		if (wpad & WPAD_CLASSIC_BUTTON_RIGHT)  out |= PAD_BUTTON_RIGHT;
+		if (wpad & WPAD_BUTTON_UP)    out |= menu ? PAD_BUTTON_UP    : PAD_BUTTON_R3;
+		if (wpad & WPAD_BUTTON_DOWN)  out |= menu ? PAD_BUTTON_DOWN  : PAD_BUTTON_SELECT;
+		if (wpad & WPAD_BUTTON_LEFT)  out |= menu ? PAD_BUTTON_LEFT  : PAD_TRIGGER_L;
+		if (wpad & WPAD_BUTTON_RIGHT) out |= menu ? PAD_BUTTON_RIGHT : PAD_TRIGGER_R;
 	}
 	else
 	{
@@ -721,6 +745,13 @@ void CapturePad(RwInt32 padID)
 				addJoystick(&exp.nunchuk.js, &leftStickPos);
 			else if (exp.type == WPAD_EXP_CLASSIC)
 			{
+				static uint32 classicHeld = 0;
+				uint32 classic = remapClassicButtons(exp.classic.btns_held, exp.classic.type);
+
+				buttonsTriggered |= classic & ~classicHeld;
+				buttonsHeld      |= classic;
+				classicHeld = classic;
+
 				addJoystick(&exp.classic.ljs, &leftStickPos);
 				addJoystick(&exp.classic.rjs, &rightStickPos);
 			}
@@ -877,6 +908,10 @@ main(int argc, char *argv[])
 	{
 		CFileMgr::SetDirMyDocuments();
 
+#ifdef LOAD_INI_SETTINGS
+		int connectedPadButtons = ControlsManager.ms_padButtonsInited;
+#endif
+
 		int32 gta3set = CFileMgr::OpenFile("gta3.set", "r");
 
 		if ( gta3set )
@@ -886,6 +921,15 @@ main(int argc, char *argv[])
 		}
 
 		CFileMgr::SetDir("");
+
+#ifdef LOAD_INI_SETTINGS
+		LoadINIControllerSettings();
+		if (connectedPadButtons != 0)
+			ControlsManager.InitDefaultControlConfigJoyPad(connectedPadButtons);
+
+		SaveINISettings();
+		SaveINIControllerSettings();
+#endif
 	}
 
 

@@ -22,6 +22,7 @@ psGlobalType;
 #define PAD_BUTTON_SELECT	0x20000
 #define PAD_BUTTON_L3		0x40000
 #define PAD_BUTTON_R3		0x80000
+#define PAD_BUTTON_EXTRA	0x100000
 
 void CapturePad(RwInt32 padID);
 

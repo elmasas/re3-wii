@@ -106,7 +106,11 @@ class CMouseControllerState;
 class CControllerState;
 
 
+#ifdef __WII__
+#define JOY_BUTTONS 17
+#else
 #define JOY_BUTTONS 16
+#endif
 #define MAX_BUTTONS (JOY_BUTTONS+1)
 
 #define ACTIONNAME_LENGTH 40

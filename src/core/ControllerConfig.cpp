@@ -171,6 +171,16 @@ int32 CControllerConfigManager::GetJoyButtonJustDown()
 		return 5;
 	else if (triggerButtons & PAD_TRIGGER_R)
 		return 6;
+	else if (triggerButtons & PAD_BUTTON_R1)
+		return 8;
+	else if (triggerButtons & PAD_BUTTON_SELECT)
+		return 9;
+	else if (triggerButtons & PAD_BUTTON_L3)
+		return 10;
+	else if (triggerButtons & PAD_BUTTON_R3)
+		return 11;
+	else if (triggerButtons & PAD_BUTTON_EXTRA)
+		return 17;
 #endif
 	return 0;
 }
@@ -2913,6 +2923,8 @@ void CControllerConfigManager::UpdateJoyButtonState(int32 padnumber)
 		m_aButtonStates[9] = 1;
 	if (heldButtons & PAD_BUTTON_R3)
 		m_aButtonStates[10] = 1;
+	if (heldButtons & PAD_BUTTON_EXTRA)
+		m_aButtonStates[16] = 1;
 #endif
 }
 
