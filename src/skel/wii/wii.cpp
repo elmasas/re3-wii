@@ -4,12 +4,10 @@
 
 #include <gccore.h>
 #include <wiiuse/wpad.h>
-#include <ogc/lwp.h>
 #include <ogc/lwp_watchdog.h>
 #include <ogc/system.h>
 #include <ogc/conf.h>
 #include <fat.h>
-#include <sdcard/wiisd_io.h>
 #include <unistd.h>
 
 #include <stdio.h>
@@ -65,31 +63,12 @@ long _dwOperatingSystemVersion;
 
 static RwBool WiiShouldRun = TRUE;
 
-static volatile bool sdMountDone = false;
-static volatile bool sdMountResult = false;
-
-static void *sdMountThread(void *arg)
+// Set working dir to the path where the assets are
+static bool SetDataDir(const char *dir)
 {
-	sdMountResult = fatMountSimple("sd", &__io_wiisd);
-	sdMountDone = true;
-	return nil;
-}
+	struct stat info;
 
-static bool MountSdWithTimeout(uint32 timeoutMs)
-{
-	lwp_t thread;
-	if (LWP_CreateThread(&thread, sdMountThread, nil, nil, 0x8000, 70) != 0)
-		return false;
-
-	u64 start = gettime();
-	while (!sdMountDone) {
-		if (ticks_to_millisecs(gettime() - start) > timeoutMs) {
-			LWP_SuspendThread(thread);
-			return false;
-		}
-		VIDEO_WaitVSync();
-	}
-	return sdMountResult;
+	return chdir(dir) == 0 && stat("data/gta3.dat", &info) == 0;
 }
 
 extern "C" int sigaction(int signum, const struct sigaction *act, struct sigaction *oldact)
@@ -834,11 +813,12 @@ main(int argc, char *argv[])
 	RsGlobal.maximumWidth = RsGlobal.width = WiiRMode->fbWidth;
 	RsGlobal.maximumHeight = RsGlobal.height = WiiRMode->xfbHeight;
 
-	bool fatOk = MountSdWithTimeout(5000);
-	(void)fatOk;
+	fatInitDefault();
 
-	// Set working dir to the path where the assets are
-	chdir("sd:/apps/re3");
+	if (!SetDataDir("sd:/apps/re3") && !SetDataDir("usb:/apps/re3")) {
+		printf("Cannot find the game files\n");
+		return FALSE;
+	}
 
 	/*
 	 * Initialize the platform independent data.

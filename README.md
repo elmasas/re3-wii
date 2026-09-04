@@ -5,7 +5,7 @@ This is a port of GTA III to the Nintendo Wii, based on [GaryOderNichts' Wii U p
 
 ## Instructions
 ### Wii
-1. Copy the built `apps` folder to the root of your SD card.
+1. Copy the built `apps` folder to the root of your SD card or USB drive.
 2. Put your PC game assets inside the re3 folder.
 3. Run re3 from the Homebrew Channel.
 
