@@ -4,15 +4,19 @@
 This is a port of GTA III to the Nintendo Wii, based on [GaryOderNichts' Wii U port](https://github.com/GaryOderNichts/re3-wiiu).  
 
 ## Instructions
-Copy the built `apps` folder to your SD card and put your PC game assets inside it.  
+### Wii
+1. Copy the built `apps` folder to the root of your SD card.
+2. Put your PC game assets inside the re3 folder.
+3. Run re3 from the Homebrew Channel.
+
+### Dolphin
+1. Put your PC game assets inside `apps/re3` on Dolphin's virtual SD card.
+2. Open `boot.dol` in Dolphin.
 
 ## Building
-Install [devkitPro](https://devkitpro.org/wiki/Getting_Started).  
-To build this project make sure you install the requried packages:  
-Windows: `pacman -S wii-dev ppc-mpg123`  
-Linux and macOS: `sudo dkp-pacman -S wii-dev ppc-mpg123`  
-Then clone this repo using `git clone https://github.com/elmasas/re3-wii` and build using `make -f Makefile.wii`.  
-To build with debug symbols edit `RELEASE_BUILD := 1` to `RELEASE_BUILD := 0` in `Makefile.wii`.
+1. Install [devkitPro](https://devkitpro.org/wiki/Getting_Started).
+2. Clone this repo: `git clone https://github.com/elmasas/re3-wii`
+3. Run `build-wii.bat` on Windows, or `./build-wii.sh` on Linux and macOS.
 
 # Original README
 [![Build Status](https://img.shields.io/endpoint.svg?url=https%3A%2F%2Factions-badge.atrox.dev%2FGTAmodding%2Fre3%2Fbadge%3Fref%3Dmaster&style=flat)](https://actions-badge.atrox.dev/GTAmodding/re3/goto?ref=master)
