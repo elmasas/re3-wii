@@ -18,8 +18,8 @@
 #include "backends/base.h"
 
 
-/* One AI transfer, 10ms of 48KHz stereo. */
-#define DMA_BYTES  1920
+/* One AI transfer, 10ms of 32KHz stereo. */
+#define DMA_BYTES  1280
 /* A transfer is too small to mix in one call, so a thread fills a ring ahead. */
 #define MIX_FRAMES 1024
 #define RING_BYTES (64*1024)
@@ -185,7 +185,7 @@ static ALCenum ALCaesndBackend_open(ALCaesndBackend *self, const ALCchar *name)
         return ALC_INVALID_VALUE;
 
     /* The AI streams 16 bit stereo at a fixed rate, nothing to negotiate. */
-    device->Frequency = 48000;
+    device->Frequency = 32000;
     device->FmtChans = DevFmtStereo;
     device->FmtType = DevFmtShort;
     device->UpdateSize = MIX_FRAMES;
@@ -244,6 +244,7 @@ static ALCboolean ALCaesndBackend_start(ALCaesndBackend *self)
     memset(dmaBuf, 0, sizeof(dmaBuf));
     DCFlushRange(dmaBuf, sizeof(dmaBuf));
 
+    AUDIO_SetDSPSampleRate(AI_SAMPLERATE_32KHZ);
     AUDIO_RegisterDMACallback(ALCaesndBackend_transferDone);
     self->registered = ALC_TRUE;
     AUDIO_InitDMA((ALuint)dmaBuf[0], DMA_BYTES);

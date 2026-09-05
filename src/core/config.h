@@ -508,6 +508,8 @@ enum Config {
 // txd.img caches the textures already tiled, the conversion is far too slow to redo per load
 // radio's deferred seek relies on a condvar wakeup that doesn't fire reliably here
 #undef MULTITHREADED_AUDIO
+#undef PS2_AUDIO_CHANNELS
+#undef AUDIO_REFLECTIONS
 #endif
 
 #ifdef BUFFER_FILES

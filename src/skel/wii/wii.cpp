@@ -1065,12 +1065,8 @@ main(int argc, char *argv[])
 
 					case GS_PLAYING_GAME:
 					{
-						float ms = (float)CTimer::GetCurrentTimeInCycles() / (float)CTimer::GetCyclesPerMillisecond();
 						if ( RwInitialised )
-						{
-							if (!CMenuManager::m_PrefsFrameLimiter || (1000.0f / (float)RsGlobal.maxFPS) < ms)
-								RsEventHandler(rsIDLE, (void *)TRUE);
-						}
+							RsEventHandler(rsIDLE, (void *)TRUE);
 						break;
 					}
 				}

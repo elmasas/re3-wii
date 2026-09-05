@@ -411,11 +411,7 @@ RsInitialize(void)
 	RsGlobal.width = DEFAULT_SCREEN_WIDTH;
 	RsGlobal.height = DEFAULT_SCREEN_HEIGHT;
 	
-#ifdef __WII__
-	RsGlobal.maxFPS = 60;
-#else
 	RsGlobal.maxFPS = 30;
-#endif
 	 
 	RsGlobal.quit = FALSE;
 
