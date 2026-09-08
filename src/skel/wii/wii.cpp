@@ -844,7 +844,7 @@ main(int argc, char *argv[])
 	RsGlobal.maximumWidth = RsGlobal.width = WiiRMode->fbWidth;
 	RsGlobal.maximumHeight = RsGlobal.height = WiiRMode->xfbHeight;
 
-	fatInitDefault();
+	dvmInit(true, 16, 256);
 
 	if (!SetDataDir("sd:/apps/re3") && !SetDataDir("usb:/apps/re3")) {
 		printf("Cannot find the game files\n");
